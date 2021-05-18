@@ -4,6 +4,7 @@ import android.content.res.AssetManager;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.catherine.libcommon.AppGlobals;
 import com.catherine.videoplay.model.BottomBar;
 import com.catherine.videoplay.model.Destination;
 

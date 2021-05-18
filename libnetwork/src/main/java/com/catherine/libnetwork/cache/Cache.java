@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey;
 import androidx.room.Relation;
 import androidx.room.TypeConverters;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 
 @Entity(tableName = "cache"
@@ -15,6 +17,7 @@ import java.io.Serializable;
 )
 public class Cache implements Serializable {
     @PrimaryKey
+    @NotNull
     public String key;
     //    @ColumnInfo(name = "data")
     public byte[] data;

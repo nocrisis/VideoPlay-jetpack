@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/empty_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_empty_no_data" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/empty_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="#999999"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="这里展示的是空数据提示文案" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/empty_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        android:visibility="gone"
+        app:backgroundTint="#ff678f"
+        app:cornerRadius="10dp"
+        tools:text="朕知道了" />
+    <!--当APP的主题是Theme.AppCompat系列时是不能使用com.google.android.material.button.MaterialButton控件的-->
+</androidx.appcompat.widget.LinearLayoutCompat>

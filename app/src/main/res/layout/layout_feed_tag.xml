@@ -29,7 +29,7 @@
         app:iconPadding="@dimen/dp_4"
         app:iconSize="@dimen/dp_12"
         tools:text="皮皮虾打人"
-        android:visibility="@{TextUtils.isEmpty(tagText)?View.GONE:View.VISIBLE"
+        android:visibility="@{TextUtils.isEmpty(tagText)?View.GONE:View.VISIBLE}"
         app:iconTint="@color/color_theme">
 
     </com.google.android.material.button.MaterialButton>

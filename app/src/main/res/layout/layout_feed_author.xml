@@ -21,7 +21,7 @@
         <com.catherine.videoplay.view.BindImageView
             android:id="@+id/avatar"
             app:image_url="@{author.avatar}"
-            app:isCircle="@{true}"
+            app:is_circle="@{true}"
             android:layout_width="@dimen/dp_40"
             android:layout_height="match_parent"
             tools:src="@mipmap/ic_launcher_round" />

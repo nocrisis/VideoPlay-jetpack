@@ -50,7 +50,7 @@
                     android:layout_width="@dimen/dp_20"
                     android:layout_height="@dimen/dp_20"
                     app:image_url="@{comment.author.avatar}"
-                    app:isCircle="@{true}"
+                    app:is_circle="@{true}"
                     tools:src="@mipmap/ic_launcher_round" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -112,7 +112,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     app:image_url="@{comment.imageUrl}"
-                    app:isCircle="=@{false}"
+                    app:is_circle="@{false}"
                     android:background="@color/color_theme"
                     tools:src="@mipmap/ic_launcher" />
 

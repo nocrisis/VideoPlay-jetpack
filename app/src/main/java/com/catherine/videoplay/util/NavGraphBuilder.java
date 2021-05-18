@@ -10,6 +10,7 @@ import androidx.navigation.NavGraphNavigator;
 import androidx.navigation.NavigatorProvider;
 import androidx.navigation.fragment.FragmentNavigator;
 
+import com.catherine.libcommon.AppGlobals;
 import com.catherine.videoplay.FixFragmentNavigator;
 import com.catherine.videoplay.model.Destination;
 
