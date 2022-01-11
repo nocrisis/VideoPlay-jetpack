@@ -1,5 +1,6 @@
 package com.catherine.libnetwork;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -7,6 +8,7 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.arch.core.executor.ArchTaskExecutor;
 
+import com.alibaba.fastjson.JSON;
 import com.catherine.libnetwork.cache.CacheManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +26,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttp;
 import okhttp3.Response;
 
-public abstract class Request<T, R> implements Cloneable {
+public abstract class Request<T, R extends Request> implements Cloneable {
     protected String mUrl;
     protected HashMap<String, String> headers = new HashMap<>();
     protected HashMap<String, Object> params = new HashMap<>();
@@ -38,7 +40,7 @@ public abstract class Request<T, R> implements Cloneable {
     private String cacheKey;
     private Type mType;
     private Class mClz;
-    private int mCacheStrategy;
+    private int mCacheStrategy = NET_ONLY;
 
     @IntDef({CACHE_ONLY, CACHE_FIRST, NET_CACHE, NET_ONLY})
     public @interface CacheStrategy {
@@ -71,12 +73,19 @@ public abstract class Request<T, R> implements Cloneable {
     }
 
     public R addParam(String key, Object value) {
+        if (value == null) {
+            return (R) this;
+        }
         try {
-            Field field = value.getClass().getField("TYPE");
-            Class clz = (Class) field.get(null);
-            //object需要是8种Primitive原始的基本类型（与wrapped相对）char,boolean,byte,short,int,long,float,double
-            if (clz.isPrimitive()) {
+            if (value.getClass() == String.class) {
                 params.put(key, value);
+            } else {
+                Field field = value.getClass().getField("TYPE");
+                Class clz = (Class) field.get(null);
+                //object需要是8种Primitive原始的基本类型（与wrapped相对）char,boolean,byte,short,int,long,float,double
+                if (clz.isPrimitive()) {
+                    params.put(key, value);
+                }
             }
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -107,17 +116,24 @@ public abstract class Request<T, R> implements Cloneable {
         return (R) this;
     }
 
+    public static final String tag = "Class: net.request.class";
+
     public ApiResponse<T> execute() {
         if (mType == null) {
             throw new RuntimeException("同步方法,response 返回值 类型必须设置");
         }
         if (mCacheStrategy == CACHE_ONLY) {
+            Log.d(tag, "execute: if (mCacheStrategy == CACHE_ONLY)");
             return readCache();
         } else {
             ApiResponse<T> result = null;
             try {
+                Log.d(tag, "execute:mCacheStrategy != CACHE_ONLY; try {start  Response response = getCall().execute()}");
                 Response response = getCall().execute();
+                Log.d(tag, "execute:mCacheStrategy != CACHE_ONLY; try {end  Response response = getCall().execute()}");
                 result = parseResponse(response, null);
+                Log.d(tag, "execute:mCacheStrategy != CACHE_ONLY; try {result = parseResponse(response, null);}");
+
             } catch (IOException e) {
                 e.printStackTrace();
                 if (result == null) {
@@ -129,19 +145,25 @@ public abstract class Request<T, R> implements Cloneable {
         }
     }
 
+    //RestrictedApi方法只能在同一个library group中调用
+    @SuppressLint("RestrictedApi")
     public void execute(JsonCallback<T> callback) {
         if (mCacheStrategy != NET_ONLY) {
+            Log.d(tag, "execute: if (mCacheStrategy != NET_ONLY) ");
             ArchTaskExecutor.getIOThreadExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d(tag, "execute: if (mCacheStrategy != NET_ONLY){ArchTaskExecutor.getIOThreadExecutor().execute(new Runnable())} ");
                     ApiResponse<T> response = readCache();
-                    if (callback != null) {
+                    if (callback != null && response.body != null) {
                         callback.onCacheSuccess(response);
+                        Log.d(tag, "execute: if (mCacheStrategy != NET_ONLY){if (callback != null) {callback.onCacheSuccess}} ");
                     }
                 }
             });
         }
         if (mCacheStrategy != CACHE_ONLY) {
+            Log.d(tag, "execute: if (mCacheStrategy != CACHE_ONLY){ getCall().enqueue(new Callback() { ");
             getCall().enqueue(new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -152,6 +174,7 @@ public abstract class Request<T, R> implements Cloneable {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    Log.d(tag, " getCall().enqueue(){onResponse:} ");
                     ApiResponse<T> apiResponse = parseResponse(response, callback);
                     if (!apiResponse.success) {
                         callback.onError(apiResponse);
@@ -164,6 +187,7 @@ public abstract class Request<T, R> implements Cloneable {
     }
 
     private ApiResponse<T> readCache() {
+        Log.d(tag, "ApiResponse<T> readCache():");
         String key = TextUtils.isEmpty(cacheKey) ? generateCacheKey() : cacheKey;
         Object cache = CacheManager.getCache(key);
         ApiResponse<T> result = new ApiResponse<>();
@@ -175,6 +199,7 @@ public abstract class Request<T, R> implements Cloneable {
     }
 
     private ApiResponse<T> parseResponse(Response response, JsonCallback<T> callback) {
+        Log.d(tag, "parseResponse: ");
         String message = null;
         int status = response.code();
         boolean success = response.isSuccessful();
@@ -182,7 +207,6 @@ public abstract class Request<T, R> implements Cloneable {
         Convert convert = ApiService.sConvert;
         try {
             String content = response.body().string();
-
             if (success) {
                 if (callback != null) {
                     ParameterizedType type = (ParameterizedType) callback.getClass().getGenericSuperclass();
@@ -208,8 +232,8 @@ public abstract class Request<T, R> implements Cloneable {
         result.status = status;
         result.message = message;
         if (mCacheStrategy != NET_ONLY && result.success && result.body instanceof Serializable) {
+            Log.d(tag, "parseResponse:if (mCacheStrategy != NET_ONLY ）{saveCache(result.body)} ");
             saveCache(result.body);
-
         }
         return result;
 
@@ -229,7 +253,7 @@ public abstract class Request<T, R> implements Cloneable {
     //先读取缓存，再读取网络数据？？？
     @NonNull
     @Override
-    protected Request clone() throws CloneNotSupportedException {
+    public Request clone() throws CloneNotSupportedException {
         return (Request<T, R>) super.clone();
     }
 }

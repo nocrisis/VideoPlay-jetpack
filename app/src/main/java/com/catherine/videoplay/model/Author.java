@@ -1,6 +1,9 @@
 package com.catherine.videoplay.model;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Author implements Serializable {
 
@@ -177,4 +180,29 @@ public class Author implements Serializable {
     public void setHasFollow(boolean hasFollow) {
         this.hasFollow = hasFollow;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Author)) return false;
+        Author author = (Author) o;
+        return id == author.id &&
+                userId == author.userId &&
+                likeCount == author.likeCount &&
+                topCommentCount == author.topCommentCount &&
+                followCount == author.followCount &&
+                followerCount == author.followerCount &&
+                expires_time == author.expires_time &&
+                score == author.score &&
+                historyCount == author.historyCount &&
+                commentCount == author.commentCount &&
+                favoriteCount == author.favoriteCount &&
+                feedCount == author.feedCount &&
+                hasFollow == author.hasFollow &&
+                TextUtils.equals(name, author.name) &&
+                TextUtils.equals(avatar, author.avatar) &&
+                TextUtils.equals(description, author.description) &&
+                TextUtils.equals(qqOpenId, author.qqOpenId);
+    }
+
 }

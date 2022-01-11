@@ -32,10 +32,21 @@ public class ListPlayerView extends FrameLayout {
     }
 
     public ListPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
+
+    }
+
+    public ListPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        /*<merge/>只能作为XML布局的根标签使用
+        当Inflate以< merge />开头的布局文件时，必须指定一个父ViewGroup，并且必须设定attachToRoot为true。 必须为TRUE，是因为MERGE标签里没有可用的根结点
+LayoutInflater.from(context).inflate(R.layout.layout_player_view, this, true);
+由此，可以看出merge标签能够将该标签中的所有控件直接连在上一级布局上面，从而减少布局层级，也就是说会直接将<merge />内的元素添加到<merge />的父元素里*/
         LayoutInflater.from(context).inflate(R.layout.layout_player_view, this, true);
+
         bufferView = findViewById(R.id.buffer_view);
-        cover = findViewById(R.id.blur_background);
+        cover = findViewById(R.id.cover);
+        blur = findViewById(R.id.blur_background);
         playBtn = findViewById(R.id.play_btn);
 
     }
@@ -70,7 +81,7 @@ public class ListPlayerView extends FrameLayout {
             coverWidth = maxWidth;
             //宽占满，缩放高度等比例自适应
             layoutHeight = coverHeight = (int) (heightPx / (widthPx * 1.0f / layoutWidth));
-        //竖屏视频，整个组件正方形
+            //竖屏视频，整个组件正方形
         } else {
             layoutHeight = coverHeight = maxHeight;
             //高占满组件，缩放宽度等比例自适应

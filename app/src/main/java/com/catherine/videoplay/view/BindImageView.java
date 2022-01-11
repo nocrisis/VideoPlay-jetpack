@@ -39,7 +39,7 @@ public class BindImageView extends AppCompatImageView {
         setImageUrl(this, imgUrl, false);
     }
 
-        @BindingAdapter(value = {"image_url", "is_circle"}, requireAll = true)
+    @BindingAdapter(value = {"image_url", "is_circle"}, requireAll = true)
     public static void setImageUrl(BindImageView view, String imgUrl, boolean isCircle) {
         RequestBuilder<Drawable> builder = Glide.with(view).load(imgUrl);
         if (isCircle) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -41,4 +41,4 @@
         app:cornerRadius="10dp"
         tools:text="朕知道了" />
     <!--当APP的主题是Theme.AppCompat系列时是不能使用com.google.android.material.button.MaterialButton控件的-->
-</androidx.appcompat.widget.LinearLayoutCompat>
+</merge>

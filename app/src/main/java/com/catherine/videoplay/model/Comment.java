@@ -1,6 +1,9 @@
 package com.catherine.videoplay.model;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Comment implements Serializable {
 
@@ -197,4 +200,28 @@ public class Comment implements Serializable {
     public void setUgc(UGC ugc) {
         this.ugc = ugc;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Comment)) return false;
+        Comment comment = (Comment) o;
+        return id == comment.id &&
+                itemId == comment.itemId &&
+                commentId == comment.commentId &&
+                userId == comment.userId &&
+                commentType == comment.commentType &&
+                createTime == comment.createTime &&
+                commentCount == comment.commentCount &&
+                likeCount == comment.likeCount &&
+                width == comment.width &&
+                height == comment.height &&
+                hasLiked == comment.hasLiked &&
+                TextUtils.equals(commentText, comment.commentText) &&
+                TextUtils.equals(imageUrl, comment.imageUrl) &&
+                TextUtils.equals(videoUrl, comment.videoUrl) &&
+                (author != null && author.equals(comment.author)) &&
+                (ugc != null && ugc.equals(comment.ugc));
+    }
+
 }

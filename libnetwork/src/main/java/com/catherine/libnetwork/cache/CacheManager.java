@@ -1,5 +1,7 @@
 package com.catherine.libnetwork.cache;
 
+import android.util.Log;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -7,15 +9,24 @@ import java.io.ObjectOutputStream;
 import java.security.Key;
 
 public class CacheManager {
+    public static final String TAG = "Class: CacheManager";
     public static <T> void save(String key, T body) {
+        Log.d(TAG, "save(): "+key);
+
         Cache cache = new Cache();
         cache.key = key;
         cache.data = toByteArray(body);
+        Log.d(TAG, "save():cache.data =toByteArray(body) ");
         CacheDatabase.get().getCache().save(cache);
+        Log.d(TAG, "save(): CacheDatabase.get().getCache().save(cache) ");
+
     }
 
     public static Object getCache(String key) {
+        Log.d(TAG, "getCache():");
+
         Cache cache = CacheDatabase.get().getCache().getCache(key);
+        Log.d(TAG, "getCache: CacheDatabase.get().getCache().getCache(key)");
         if (cache != null && cache.data != null) {
             return toObject(cache.data);
         }

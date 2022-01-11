@@ -1,6 +1,9 @@
 package com.catherine.videoplay.model;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Feed implements Serializable {
 
@@ -19,6 +22,8 @@ public class Feed implements Serializable {
      * url : https://pipijoke.oss-cn-hangzhou.aliyuncs.com/New%20Year%20-%2029212-video.mp4
      * cover : https://pipijoke.oss-cn-hangzhou.aliyuncs.com/2020%E5%B0%81%E9%9D%A2%E5%9B%BE.png
      */
+    public static final int TYPE_IMAGE = 1;
+    public static final int TYPE_VIDEO = 2;
 
     private int id;
     private long itemId;
@@ -27,7 +32,7 @@ public class Feed implements Serializable {
     private int duration;
     private String feeds_text;
     private int authorId;
-    private Object activityIcon;
+    private String activityIcon;
     private String activityText;
     private int width;
     private int height;
@@ -93,11 +98,11 @@ public class Feed implements Serializable {
         this.authorId = authorId;
     }
 
-    public Object getActivityIcon() {
+    public String getActivityIcon() {
         return activityIcon;
     }
 
-    public void setActivityIcon(Object activityIcon) {
+    public void setActivityIcon(String activityIcon) {
         this.activityIcon = activityIcon;
     }
 
@@ -163,5 +168,33 @@ public class Feed implements Serializable {
 
     public void setUgc(UGC ugc) {
         this.ugc = ugc;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Feed)) return false;//包括了o == null
+        if (this == o) return true;
+        Feed feed = (Feed) o;
+        return id == feed.id &&
+                itemId == feed.itemId &&
+                itemType == feed.itemType &&
+                createTime == feed.createTime &&
+                duration == feed.duration &&
+                authorId == feed.authorId &&
+                width == feed.width &&
+                height == feed.height &&
+                TextUtils.equals(feeds_text, feed.feeds_text) &&
+                TextUtils.equals(activityIcon, feed.activityIcon) &&
+                TextUtils.equals(activityText, feed.activityText) &&
+                TextUtils.equals(url, feed.url) &&
+                TextUtils.equals(cover, feed.cover) &&
+                (author != null && author.equals(feed.author)) &&
+                (topComment != null && topComment.equals(feed.topComment)) &&
+                (ugc != null && ugc.equals(feed.ugc));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, itemId, itemType, createTime, duration, feeds_text, authorId, activityIcon, activityText, width, height, url, cover, author, topComment, ugc);
     }
 }

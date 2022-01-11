@@ -1,6 +1,7 @@
 package com.catherine.videoplay.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class UGC implements Serializable {
 
@@ -77,4 +78,22 @@ public class UGC implements Serializable {
     public void setHasDissed(boolean hasDissed) {
         this.hasDissed = hasDissed;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UGC)) return false;
+        UGC ugc = (UGC) o;
+        return likeCount == ugc.likeCount &&
+                shareCount == ugc.shareCount &&
+                commentCount == ugc.commentCount &&
+                hasFavorite == ugc.hasFavorite &&
+                hasLiked == ugc.hasLiked &&
+                hasdiss == ugc.hasdiss &&
+                hasDissed == ugc.hasDissed;
+    }
+
 }
+
+
+

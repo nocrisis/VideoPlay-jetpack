@@ -1,9 +1,9 @@
 package com.catherine.libnetwork;
 
 public class ApiResponse<T> {
-    String message;
-    boolean success;
-    int status;
-    T body;
+    public String message;
+    public boolean success;
+    public int status;
+    public T body;
 
 }
