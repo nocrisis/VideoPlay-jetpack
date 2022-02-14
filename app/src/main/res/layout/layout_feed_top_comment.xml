@@ -65,7 +65,7 @@
                     tools:text="神秘的JetPack" />
 
                 <!--用于撑开后面的点赞-->
-                <Space
+                <androidx.legacy.widget.Space
                     android:layout_width="0dp"
                     android:layout_height="1px"
                     android:layout_weight="1" />
@@ -74,7 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="@{comment.ugc.likeCount > 0 ? StringConvert.convertFeedUgc(comment.ugc.likeCount) : null"
+                    android:text="@{comment.ugc.likeCount > 0 ? StringConvert.convertFeedUgc(comment.ugc.likeCount) : null}"
                     android:textColor="@{comment.ugc.hasLiked ? @color/color_theme : @color/color_3d}"
                     android:textSize="@dimen/sp_12"
                     tools:text="1000" />
