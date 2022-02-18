@@ -9,9 +9,15 @@
             name="feed"
             type="Feed" />
 
+        <variable
+            name="lifecycleOwner"
+            type="androidx.lifecycle.LifecycleOwner" />
+
         <import type="com.catherine.videoplay.model.Feed" />
 
         <import type="com.catherine.videoplay.util.StringConvert" />
+
+        <import type="com.catherine.videoplay.ui.home.InteractionPresenter" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -25,28 +31,36 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
+            android:onClick="@{()->InteractionPresenter.toggleFeedLike(lifecycleOwner,feed)}"
             android:text="@{feed.ugc.likeCount>0?StringConvert.convertFeedUgc(feed.ugc.likeCount):@string/like}"
             android:textColor="@{feed.ugc.hasLiked?@color/color_theme:@color/color_3d}"
             android:textSize="@dimen/sp_14"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="0dp"
             app:icon="@{feed.ugc.hasLiked?@drawable/icon_cell_liked:@drawable/icon_cell_like}"
             app:iconGravity="textStart"
             app:iconPadding="@dimen/dp_4"
+            app:iconTint="@{feed.ugc.hasLiked?@color/color_theme:@color/color_3d}"
             tools:icon="@drawable/icon_cell_liked"
-            tools:text="1000" />
+            tools:iconTint="@color/color_3d"
+            tools:text="1000"
+            tools:textColor="@color/color_3d" />
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
-            android:text="踩"
-            android:textColor="@{feed.ugc.hasdiss?@color/color_theme:@color/color_3d}"
+            android:onClick="@{()->InteractionPresenter.toggleFeedDiss(lifecycleOwner,feed)}"
+            android:text="@string/diss"
+            android:textColor="@{feed.ugc.hasDissed?@color/color_theme:@color/color_3d}"
             android:textSize="@dimen/sp_14"
-            app:icon="@{feed.ugc.hasdiss?@drawable/icon_cell_dissed:@drawable/icon_cell_diss}"
+            app:icon="@{feed.ugc.hasDissed?@drawable/icon_cell_dissed:@drawable/icon_cell_diss}"
             app:iconGravity="textStart"
             app:iconPadding="@dimen/dp_4"
-            tools:icon="@drawable/icon_cell_dissed" />
+            app:iconTint="@{feed.ugc.hasDissed?@color/color_theme:@color/color_3d}"
+            tools:icon="@drawable/icon_cell_dissed"
+            tools:text="1000" />
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="0dp"
@@ -58,6 +72,7 @@
             app:icon="@drawable/icon_cell_comment"
             app:iconGravity="textStart"
             app:iconPadding="@dimen/dp_4"
+            app:iconTint="@color/color_3d"
             tools:text="1000" />
 
         <com.google.android.material.button.MaterialButton
@@ -70,6 +85,7 @@
             app:icon="@drawable/icon_cell_share"
             app:iconGravity="textStart"
             app:iconPadding="@dimen/dp_4"
+            app:iconTint="@color/color_3d"
             tools:text="1000" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

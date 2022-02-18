@@ -55,10 +55,10 @@ LayoutInflater.from(context).inflate(R.layout.layout_player_view, this, true);
 
         mCategory = category;
         mVideoUrl = videoUrl;
-        cover.setImgUrl(coverUrl);
+        cover.setImageUrl(coverUrl);
         if (widthPx < heightPx) {
             //竖屏视频两边不够才需要加载高速模糊背景
-            blur.setBlurImgUrl(coverUrl, 10);
+            BindImageView.setBlurImgUrl(blur,coverUrl, 10);
             blur.setVisibility(VISIBLE);
         } else {//横屏不需要填充
             blur.setVisibility(INVISIBLE);

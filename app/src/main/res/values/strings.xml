@@ -5,4 +5,5 @@
     <string name="title_notifications">Notifications</string>
     <string name="login_text">QQ账号登录</string>
     <string name="like">赞</string>
+    <string name="diss">踩</string>
 </resources>

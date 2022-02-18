@@ -8,7 +8,6 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.arch.core.executor.ArchTaskExecutor;
 
-import com.alibaba.fastjson.JSON;
 import com.catherine.libnetwork.cache.CacheManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +22,6 @@ import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttp;
 import okhttp3.Response;
 
 public abstract class Request<T, R extends Request> implements Cloneable {
@@ -155,7 +153,7 @@ public abstract class Request<T, R extends Request> implements Cloneable {
                 public void run() {
                     Log.d(tag, "execute: if (mCacheStrategy != NET_ONLY){ArchTaskExecutor.getIOThreadExecutor().execute(new Runnable())} ");
                     ApiResponse<T> response = readCache();
-                    if (callback != null && response.body != null) {
+                    if (callback != null && response.data != null) {
                         callback.onCacheSuccess(response);
                         Log.d(tag, "execute: if (mCacheStrategy != NET_ONLY){if (callback != null) {callback.onCacheSuccess}} ");
                     }
@@ -193,7 +191,7 @@ public abstract class Request<T, R extends Request> implements Cloneable {
         ApiResponse<T> result = new ApiResponse<>();
         result.status = 304;
         result.message = "缓存获取成功";
-        result.body = (T) cache;
+        result.data = (T) cache;
         result.success = true;
         return result;
     }
@@ -211,11 +209,11 @@ public abstract class Request<T, R extends Request> implements Cloneable {
                 if (callback != null) {
                     ParameterizedType type = (ParameterizedType) callback.getClass().getGenericSuperclass();
                     Type argument = type.getActualTypeArguments()[0];
-                    result.body = (T) convert.convert(content, argument);
+                    result.data = (T) convert.convert(content, argument);
                 } else if (mType != null) {
-                    result.body = (T) convert.convert(content, mType);
+                    result.data = (T) convert.convert(content, mType);
                 } else if (mClz != null) {
-                    result.body = (T) convert.convert(content, mClz);
+                    result.data = (T) convert.convert(content, mClz);
                 } else {
                     Log.e("request", "parseResponse:无法解析");
                 }
@@ -231,9 +229,9 @@ public abstract class Request<T, R extends Request> implements Cloneable {
         result.success = success;
         result.status = status;
         result.message = message;
-        if (mCacheStrategy != NET_ONLY && result.success && result.body instanceof Serializable) {
+        if (mCacheStrategy != NET_ONLY && result.success && result.data instanceof Serializable) {
             Log.d(tag, "parseResponse:if (mCacheStrategy != NET_ONLY ）{saveCache(result.body)} ");
-            saveCache(result.body);
+            saveCache(result.data);
         }
         return result;
 

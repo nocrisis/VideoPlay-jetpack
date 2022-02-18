@@ -2,10 +2,13 @@ package com.catherine.videoplay.model;
 
 import android.text.TextUtils;
 
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Feed implements Serializable {
+public class Feed extends BaseObservable implements Serializable {
 
     /**
      * id : 428
@@ -162,7 +165,11 @@ public class Feed implements Serializable {
         this.topComment = topComment;
     }
 
+    @Bindable
     public UGC getUgc() {
+        if (ugc == null) {
+            ugc = new UGC();
+        }
         return ugc;
     }
 

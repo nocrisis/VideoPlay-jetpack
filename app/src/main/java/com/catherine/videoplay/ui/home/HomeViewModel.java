@@ -19,6 +19,7 @@ import com.catherine.libnetwork.JsonCallback;
 import com.catherine.libnetwork.Request;
 import com.catherine.videoplay.model.Feed;
 import com.catherine.videoplay.ui.MutablePageKeyedDataSource;
+import com.catherine.videoplay.ui.login.UserManager;
 import com.catherine.videoplay.viewmodel.AbsViewModel;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class HomeViewModel extends AbsViewModel<Feed> {
         public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Feed> callback) {
             Log.d(tag, "loadInitial:loadData(0, callback)");
             //加载初始化数据的(回调都自动切换到了子线程)
-            loadData(0, callback);
+            loadData(0, params.requestedLoadSize, callback);
             Log.d(tag, "loadInitial:withCache = false");
             withCache = false;
             //先加载缓存，再加载网络数据，网络数据加载成功后再更新缓存
@@ -59,7 +60,7 @@ public class HomeViewModel extends AbsViewModel<Feed> {
             //加载分页数据的(回调都自动切换到了子线程)
             Log.d(tag, "loadAfter:loadData(" + params.key + ", callback)");
 
-            loadData(params.key, callback);
+            loadData(params.key, params.requestedLoadSize, callback);
         }
 
         @Override
@@ -83,15 +84,15 @@ public class HomeViewModel extends AbsViewModel<Feed> {
 
     // /feed/queryHotFeedsList
     //key=0,上拉分页不需要缓存，key
-    private void loadData(int key, ItemKeyedDataSource.LoadCallback<Feed> callback) {
+    private void loadData(int key, int count, ItemKeyedDataSource.LoadCallback<Feed> callback) {
         if (key > 0) {
             loadAfter.set(true);
         }
         Request request = ApiService.get("/feeds/queryHotFeedsList")
 //                .addParam("feedType", mFeedType)
-                .addParam("userId", 0)
+                .addParam("userId", UserManager.get().getUserId())
                 .addParam("feedId", key)
-                .addParam("pageCount", 10)
+                .addParam("pageCount", count)
                 .responseType(new TypeReference<ArrayList<Feed>>() {
                 }.getType());
         if (withCache) {
@@ -103,7 +104,7 @@ public class HomeViewModel extends AbsViewModel<Feed> {
                 public void onCacheSuccess(ApiResponse<List<Feed>> response) {
                     Log.d(tag, "loadData:if (withCache){request.execute(){onCacheSuccess: " + JSON.toJSONString(response, SerializerFeature.WriteNullStringAsEmpty) + "}");
                     MutablePageKeyedDataSource<Integer, Feed> dataSource = new MutablePageKeyedDataSource<>();
-                    dataSource.data.addAll(response.body);
+                    dataSource.data.addAll(response.data);
                     PagedList pagedList = dataSource.buildNewPagedList(config);
                     Log.d(tag, "loadData:if (withCache){request.execute(new JsonCallback<List<Feed>>(){onCacheSuccess: cacheLiveData.postValue}");
                     cacheLiveData.postValue(pagedList);
@@ -117,7 +118,7 @@ public class HomeViewModel extends AbsViewModel<Feed> {
             netRequest.cacheStrategy(key == 0 ? Request.NET_CACHE : Request.NET_ONLY);
             Log.d(tag, "loadData:ApiResponse.execute()");
             ApiResponse<List<Feed>> response = netRequest.execute();
-            List<Feed> data = response.body == null ? Collections.emptyList() : response.body;
+            List<Feed> data = response.data == null ? Collections.emptyList() : response.data;
             Log.d(tag, "loadData:List<Feed> data = response.body or emptyList");
             callback.onResult(data);
             Log.d(tag, "loadData:callback.onResult(data);");
@@ -147,7 +148,7 @@ public class HomeViewModel extends AbsViewModel<Feed> {
         ArchTaskExecutor.getIOThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                loadData(id, callback);
+                loadData(id, config.pageSize, callback);
             }
         });
 

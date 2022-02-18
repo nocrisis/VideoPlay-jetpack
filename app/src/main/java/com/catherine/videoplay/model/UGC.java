@@ -1,9 +1,14 @@
 package com.catherine.videoplay.model;
 
-import java.io.Serializable;
-import java.util.Objects;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
-public class UGC implements Serializable {
+import com.alibaba.fastjson.annotation.JSONField;
+import com.catherine.videoplay.BR;
+
+import java.io.Serializable;
+
+public class UGC extends BaseObservable implements Serializable {
 
     /**
      * likeCount : 1001
@@ -11,7 +16,6 @@ public class UGC implements Serializable {
      * commentCount : 504
      * hasFavorite : false
      * hasLiked : false
-     * hasdiss : false
      * hasDissed : false
      */
 
@@ -20,7 +24,7 @@ public class UGC implements Serializable {
     private int commentCount;
     private boolean hasFavorite;
     private boolean hasLiked;
-    private boolean hasdiss;
+    @JSONField(name = "hasdiss")
     private boolean hasDissed;
 
     public int getLikeCount() {
@@ -55,28 +59,39 @@ public class UGC implements Serializable {
         this.hasFavorite = hasFavorite;
     }
 
+    @Bindable
     public boolean isHasLiked() {
         return hasLiked;
     }
 
     public void setHasLiked(boolean hasLiked) {
+        if (this.hasLiked == hasLiked) {
+            return;
+        }
+        if (hasLiked) {
+            likeCount = likeCount + 1;
+            setHasDissed(false);
+        } else {
+            likeCount = likeCount - 1;
+        }
         this.hasLiked = hasLiked;
+        notifyPropertyChanged(BR._all);
     }
 
-    public boolean isHasdiss() {
-        return hasdiss;
-    }
-
-    public void setHasdiss(boolean hasdiss) {
-        this.hasdiss = hasdiss;
-    }
-
+    @Bindable
     public boolean isHasDissed() {
         return hasDissed;
     }
 
     public void setHasDissed(boolean hasDissed) {
+        if (this.hasDissed == hasDissed) {
+            return;
+        }
+        if(hasDissed){
+            setHasLiked(false);
+        }
         this.hasDissed = hasDissed;
+        notifyPropertyChanged(BR._all);
     }
 
     @Override
@@ -89,7 +104,6 @@ public class UGC implements Serializable {
                 commentCount == ugc.commentCount &&
                 hasFavorite == ugc.hasFavorite &&
                 hasLiked == ugc.hasLiked &&
-                hasdiss == ugc.hasdiss &&
                 hasDissed == ugc.hasDissed;
     }
 
