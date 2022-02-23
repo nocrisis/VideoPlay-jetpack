@@ -3,7 +3,9 @@ package com.catherine.videoplay.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
 
     private String avatar;
