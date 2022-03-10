@@ -9,9 +9,15 @@
             name="comment"
             type="com.catherine.videoplay.model.Comment" />
 
+        <variable
+            name="lifecycleOwner"
+            type="androidx.lifecycle.LifecycleOwner" />
+
         <import type="android.text.TextUtils" />
 
         <import type="android.view.View" />
+
+        <import type="com.catherine.videoplay.ui.home.InteractionPresenter" />
 
         <import type="com.catherine.videoplay.util.StringConvert" />
     </data>
@@ -84,6 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_4"
                     android:padding="@dimen/dp_2"
+                    android:onClick="@{()->InteractionPresenter.setToggleCommentLike(lifecycleOwner,comment)}"
                     android:src="@{comment.ugc.hasLiked ? @drawable/icon_cell_liked : @drawable/icon_cell_like}"
                     tools:src="@drawable/icon_cell_liked" />
 
@@ -111,9 +118,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:background="@color/color_theme"
                     app:image_url="@{comment.imageUrl}"
                     app:is_circle="@{false}"
-                    android:background="@color/color_theme"
                     tools:src="@mipmap/ic_launcher" />
 
                 <androidx.appcompat.widget.AppCompatImageView
