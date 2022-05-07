@@ -11,6 +11,7 @@ import androidx.paging.PagedList;
 import androidx.paging.PagedListAdapter;
 
 import com.catherine.libnavannotation.FragmentDestination;
+import com.catherine.videoplay.exoplayer.PageListPlayDetector;
 import com.catherine.videoplay.model.Feed;
 import com.catherine.videoplay.ui.AbsListFragment;
 import com.catherine.videoplay.ui.MutablePageKeyedDataSource;
@@ -21,6 +22,17 @@ import java.util.List;
 @FragmentDestination(asStarter = true, pageUrl = "main/tabs/home")
 public class HomeFragment extends AbsListFragment<Feed, HomeViewModel> {
 
+    private PageListPlayDetector playDetector;
+    private String feedType;
+
+    public static HomeFragment newInstance(String feedType) {
+        Bundle args = new Bundle();
+        args.putString("feedType", feedType);
+        HomeFragment fragment = new HomeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mViewModel.getCacheLiveData().observe(getViewLifecycleOwner(), new Observer<PagedList<Feed>>() {
@@ -29,13 +41,28 @@ public class HomeFragment extends AbsListFragment<Feed, HomeViewModel> {
                 adapter.submitList(feeds);
             }
         });
+        playDetector = new PageListPlayDetector(this, mRecyclerview);
+
+
     }
 
 
     @Override
     public PagedListAdapter getAdapter() {
-        String feedType = getArguments() == null ? "all" : getArguments().getString("feedType");
-        return new FeedAdapter(getContext(), feedType);
+        feedType = getArguments() == null ? "all" : getArguments().getString("feedType");
+        return new FeedAdapter(getContext(), feedType){
+            @Override
+            public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
+                super.onViewAttachedToWindow(holder);
+                playDetector.addTarget(holder.getListPlayerView());
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
+                super.onViewDetachedFromWindow(holder);
+                playDetector.removeTarget(holder.getListPlayerView());
+            }
+        };
     }
 
     @Override
@@ -66,5 +93,17 @@ public class HomeFragment extends AbsListFragment<Feed, HomeViewModel> {
         //invalidate 之后Paging会重新创建一个DataSource 重新调用它的loadInitial方法加载初始化数据
         //详情见：LivePagedListBuilder#compute方法
         mViewModel.getDataSource().invalidate();
+    }
+
+    @Override
+    public void onPause() {
+        playDetector.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        playDetector.onResume();
+        super.onResume();
     }
 }

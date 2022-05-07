@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.catherine.videoplay.databinding.LayoutFeedTypeImageBinding;
 import com.catherine.videoplay.databinding.LayoutFeedTypeVideoBinding;
 import com.catherine.videoplay.model.Feed;
+import com.catherine.videoplay.view.ListPlayerView;
 
 public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> {
 
@@ -64,6 +65,7 @@ public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ViewDataBinding mBinding;
+        private ListPlayerView listPlayerView;
 
         public ViewHolder(@NonNull View itemView, ViewDataBinding binding) {
             super(itemView);
@@ -80,8 +82,18 @@ public class FeedAdapter extends PagedListAdapter<Feed, FeedAdapter.ViewHolder> 
                 LayoutFeedTypeVideoBinding videoBinding = (LayoutFeedTypeVideoBinding) mBinding;
                 videoBinding.setFeed(item);
                 videoBinding.listPlayerView.bindData(mCategory, item.getWidth(), item.getHeight(), item.getCover(), item.getUrl());
-                videoBinding.setLifecycleOwner((LifecycleOwner)mContext);
+                videoBinding.setLifecycleOwner((LifecycleOwner) mContext);
+                listPlayerView = videoBinding.listPlayerView;
             }
         }
+
+        public boolean isVideoItem() {
+            return mBinding instanceof LayoutFeedTypeVideoBinding;
+        }
+
+        public ListPlayerView getListPlayerView() {
+            return listPlayerView;
+        }
     }
+
 }
